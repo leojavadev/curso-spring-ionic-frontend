@@ -25,14 +25,10 @@ export class PaymentPage {
         "@type": ["pagamentoComCartao", Validators.required]
       });
   }
-
-  ionViewDidLoad() {
-    
-  }
-
+  
   nextPage(){
-    this.pedido.pagamento = this.formGroup.value;
-    console.log(this.pedido);
+    this.pedido.pagamento = this.formGroup.value; 
+    this.navCtrl.setRoot('OrderConfirmationPage', {pedido: this.pedido});
   }
 
 }
