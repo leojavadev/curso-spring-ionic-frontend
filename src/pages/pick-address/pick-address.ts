@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { EnderecoDTO } from '../../models/endereco.dto';
+import { ClienteService } from '../../services/domain/cliente.service';
+import { StorageService } from '../../services/storage.service';
 
 @IonicPage()
 @Component({
@@ -11,44 +13,29 @@ export class PickAddressPage {
 
   items : EnderecoDTO[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public clienteService: ClienteService,
+    public storage: StorageService
+    ) {
   }
 
   ionViewDidLoad() {
-    this.items = [
-      {
-        id: "1",
-        logradouro: "Rua Tereza",
-        numero: "50",
-        complemento: "",
-        bairro: "Centro",
-        cep: "36251478",
-        cidade: {
-          id: "1",
-          nome: "Matias Barbosa",
-          estado: {
-            id: "1",
-            nome: "Minas Gerais"
+    let localUser = this.storage.getLocalUser();
+    if(localUser && localUser.email){
+      this.clienteService.findByEmail(localUser.email)
+        .subscribe(response => {
+          this.items = response['enderecos'];
+        },
+        error => {
+          if(error.status == 403){
+            this.navCtrl.setRoot('HomePage');
           }
-        }
-      },
-      {
-        id: "2",
-        logradouro: "Rua B",
-        numero: "720",
-        complemento: "Apto 603",
-        bairro: "Encosta do Sol",
-        cep: "36568974",
-        cidade: {
-          id: "2",
-          nome: "Viçosa",
-          estado: {
-            id: "1",
-            nome: "Minas Gerais"
-          }
-        }
-      }
-    ]
+        });
+    } else {
+      this.navCtrl.setRoot('HomePage');
+    }
   }
 
 }
