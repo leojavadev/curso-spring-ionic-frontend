@@ -28,6 +28,6 @@
       <h1>Seu carrinho está vazio!</h1>
     </ion-item>
     <button ion-button block (click)="keepShopping()">Continuar comprando</button>
-    <button ion-button block color="secondary" (click)="checkout()">Finalizar pedido</button>
+    <button *ngIf="getTotal() > 0" ion-button block color="secondary" (click)="checkout()">Finalizar pedido</button>
   </ion-list>
 </ion-content>
